@@ -90,10 +90,15 @@ Key insights include:
 - Significant differences in average age exist between male and female victims (t-test p=0.0391).
 - Young adults are disproportionately involved in high-risk accident types, especially motorcyclists and cyclists.
 
+  <img width="976" height="535" alt="image" src="https://github.com/user-attachments/assets/292a8c3c-5444-4ab7-b8df-d49963ba7731" />
+
+
 ### Gender
 - Men represent 88% of victims (247 vs. 33 women); fewer than 20% of victims are female (prop-test p=0.0003875).
 - No significant associations were found between gender and accident type or between gender and victim characteristics (chi-square tests not rejected).
 - Highlights higher male exposure and risk-taking behavior rather than structural factors.
+
+<img width="973" height="522" alt="image" src="https://github.com/user-attachments/assets/152db6e2-fb7e-4d47-9ba2-b80cbd2b5c38" />
 
 ### Accident Type & Class
 - Types include collisions (fixed/moving objects, general) and rollovers, all fatal in the dataset.
@@ -101,6 +106,9 @@ Key insights include:
 - Moving-object collisions peak on Saturdays (high traffic volume).
 - Fixed-object collisions peak on Sundays (likely linked to impairment).
 - Rollover incidents are most frequent on weekends.
+
+  <img width="975" height="545" alt="image" src="https://github.com/user-attachments/assets/cf25a6e7-e44c-41a4-ac50-3112a3926023" />
+
 
 ### Victim Characteristics
 
@@ -110,6 +118,10 @@ Key insights include:
 - No significant association between gender and victim type.
 - Young males dominate the accident profile.
 
+<img width="975" height="487" alt="image" src="https://github.com/user-attachments/assets/50fa2e8d-89b4-43eb-9b03-cb8d7e8654db" />
+
+  
+
 ### Temporal Patterns 
 
 - Significant variation in accident frequency by day of the week (chi-square p=2.167e-07).
@@ -117,6 +129,8 @@ Key insights include:
 - Sundays show the highest number of fixed-object collisions, possibly related to alcohol or substance use.
 - Rollovers increase significantly on weekends.
 - Interventions should be tailored by day of the week to address peak-risk periods.
+
+<img width="973" height="522" alt="image" src="https://github.com/user-attachments/assets/73acabc6-3de9-423d-b4c3-bbbd6556431d" />
 
 ### Recommendations
 
