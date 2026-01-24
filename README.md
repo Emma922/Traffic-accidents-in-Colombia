@@ -7,6 +7,7 @@ This academic project analyzes traffic accident data in Neiva Colombia between J
 ## Dataset Overview
 
 Data Source: [Traffic accidents dataset](https://www.datos.gov.co/dataset/MUERTES-ACCIDENTES-DE-TRANSITO-2012-2022-MARZO/wwir-6riq/data_preview)
+
 Key Variables Analyzed:
 
 Age of accident victims
@@ -46,31 +47,35 @@ The R code to make the entire analysis and can be found here:
 
 ### Overview of Findings
 
-Olist showed steady growth month by month. The analysis indicates a strong market presence, particularly in Sao Paulo (SP), Minas Gerais (MG), and Rio de Janeiro (RJ). Additionally, a lack of customer loyalty and logistic problems are key issues that prevent Olist from developing better sales numbers. 
-Furthermore, there is observed the pareto rule in sales performance for categories and sellers, which means that Olist relies heavily on a few categories and sellers.
+The analysis of traffic accident data in Colombia reveals clear patterns regarding accident frequency, victim characteristics, and risk factors. Motorcyclists and young adults emerge as the most vulnerable groups, while weekends—particularly Saturdays and Sundays—show significantly higher accident rates. The data also highlight strong relationships between certain accident types and victim characteristics, as well as differences in age distribution between genders.
 
 Key insights include:
 
-- It is observed that there is consistent sales growth per year, while no seasonality patterns are demonstrated 
-- Category and seller sales follow the Pareto rule
-- More than 50% of sellers contribute only 5% revenue, which suggests that many sellers might be inactive
-- Only 7 out of 75 categories comprise almost 50% of total sales
-- Olist lacks customer loyalty. Based on the RFM analysis, customers who contribute most  to the sales did not make additional purchases
-- Outperforming states show lower freight values, while underperforming states tend to have higher freight values. This indicates that shipping cost strongly influences purchasing behavior.
-- There are certain issues related to logistics. Even a few of the highest-performing products show complaints. Additionally, there is a significant quantity of low-quality review sellers who have sold a considerable amount of products.
-- Customer financing preferences depend on the type of goods, particularly for expensive or long-term items.
+- Motorcycle drivers represent the highest risk group for traffic fatalities, accounting for more than 70% of all accidents.
+- Women account for less than 20% of accident victims, confirming a significant gender disparity in traffic-related fatalities.
+- The average age of motorcyclists involved in accidents is below 35 years, while the average age of accident victims differs significantly between men and women.
+- Cyclists are primarily affected when they are struck by vehicles, rather than causing collisions themselves.
+- Accident frequency varies significantly by day of the week, with Saturdays and Sundays showing the highest number of incidents. Collisions with moving objects peak on Saturdays, while collisions with fixed objects are more common on Sundays.
+- Victim characteristics strongly correlate with accident type, but not with gender or the day of the week.
+- There is no significant association between gender and accident type, nor between victim characteristics and gender.
+- Rollover accidents are more frequent on weekends, suggesting a higher risk of loss of vehicle control during this period, likely influenced by alcohol or substance use.
+- The chi-square analyses confirm several statistically significant relationships (e.g., accident type vs. victim characteristics, day vs. accident type), while other potential associations (gender vs. accident type, victim characteristics vs. day) were not significant.
 
-### Based on these findings, Olist would benefit from:
+### Recommendations Based on Findings
 
-- Leverage company growth through marketing ads across Brazil to sustain momentum and expand reach.
-- Sellers-focused campaigns to encourage sales activity, providing training, incentives or
-promotional tools to activate inactive sellers.
-- Marketing campaigns focused on outperforming products and categories
-- Balance freight values for underperforming states to encourage sales in these places
-- Watch out for logistics and seller complaints by strengthening quality control, improving delivery reliablity, and monitoring seller performance.
-- Take advantage of customer financing preferences through targeted marketing and financial strategies
-- Implement customer engagement programs to increase repeat purchases.
+- Implement targeted road safety campaigns focusing on motorcyclists and young adult drivers, highlighting the heightened risk of weekend travel.
 
+- Strengthen weekend traffic enforcement and monitoring, particularly on Saturdays and Sundays, to reduce collisions with moving and fixed objects.
+
+- Promote cyclist safety programs, such as awareness campaigns and improved infrastructure, to protect vulnerable road users.
+
+- Develop gender-informed road safety initiatives that consider differences in accident exposure and age-related risk patterns.
+
+- Address rollover and high-risk accidents by implementing public campaigns against impaired driving and promoting safe driving behaviors on weekends.
+
+- Use the findings to inform urban planning and traffic regulations, such as adjusting speed limits, traffic calming measures, and accident-prone zone interventions.
+
+- Monitor accident trends over time to evaluate the impact of preventive measures and identify emerging risk patterns.
 ---
 
 ## Insights Deep Dive
