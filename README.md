@@ -106,6 +106,7 @@ Key insights include:
 - Moving-object collisions peak on Saturdays (high traffic volume).
 - Fixed-object collisions peak on Sundays (likely linked to impairment).
 - Rollover incidents are most frequent on weekends.
+- No difference between genre and accident type founded
 
   <img width="975" height="545" alt="image" src="https://github.com/user-attachments/assets/cf25a6e7-e44c-41a4-ac50-3112a3926023" />
 
