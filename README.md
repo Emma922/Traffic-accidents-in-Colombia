@@ -39,7 +39,7 @@ Development of data-driven recommendations aimed at reducing traffic accidents a
 
 
 The R code to make the entire analysis and can be found here:  
-[Python Cleaning and Exploration Code](https://github.com/Emma922/Olist-Project/blob/302c4819153578439040c44af7a7dab13978ef14/Olist_EDA_cleaning.ipynb)
+[R complete analysis](https://github.com/Emma922/Olist-Project/blob/302c4819153578439040c44af7a7dab13978ef14/Olist_EDA_cleaning.ipynb)
 
 
 
