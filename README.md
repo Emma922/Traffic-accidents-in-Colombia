@@ -80,101 +80,64 @@ Key insights include:
 
 ## Insights Deep Dive
 
-### Historical Sales Performance
 
-- All months show a consistent growth per year, indicating a general growth trend in sales per year.
-This suggests that Olist has been strengthening its presence in the Brazilian market over time. 
-  
-- Based on the available data, we can infer that Olist may exhibit a seasonality pattern during the first 2 quarters of the year. However, due to the limited data across full yearly cycles, 
-this conclusion cannot be confirmed with certainty. Since the dataset only extends to September 2018, we lack information on the final quarter of that year, preventing a complete comparison between first-quarter and last-quarter sales performance.
+### Vehicle Type
+-Motorcyclists account for over 70% of the 280 fatalities (232 cases), far exceeding cyclists (36) and automobile drivers (12).
+- They show the highest risk across genders and are linked strongly to various accident types (chi-square p=2.652e-11 with victim characteristics).
+- Cyclists mainly suffer collisions where not at fault (e.g., struck by vehicles).
+​
 
-- The increase in sales observed during the first months of 2018 may be attributed to Olist�s overall growth rather than to a definitive seasonality pattern. 
-With the current dataset, we cannot reliably distinguish between structural growth and seasonal effects.
+## Insights Deep Dive
 
-![Customer Loyalty Snapshot](https://github.com/user-attachments/assets/a202a70e-f7f4-4bed-b4e2-0de7d446c750)
+### Vehicle Type
 
+- Motorcyclists account for over 70% of fatalities (232/280), far exceeding cyclists (36) and car drivers (12).
+- Motorcyclists show the highest risk across genders and accident types (chi-square p=2.652e-11 with victim characteristics).
+- Cyclists are primarily struck victims; rarely cause collisions themselves.
+- Rollovers are more frequent among motorcycles on weekends.
 
+### Age
 
-### Products and Category Performance
+- Fatalities concentrate among young adults; age distribution is positively skewed and non-normal (Shapiro-Wilk p=3.164e-11).
+- The average age of motorcyclists involved in accidents is under 35 (t-test p=0.01322).
+- Significant differences in average age exist between male and female victims (t-test p=0.0391).
+- Young adults are disproportionately involved in high-risk accident types, especially motorcyclists and cyclists.
 
--  The data shows a strong **20–80 pattern**:
-  - Only **7 out of 75** categories account for almost **50% of total sales**.
-  - **21% of categories** represent **80% of total revenue**.
-  - **17% of sellers** generate **80% of total sales**.
-  - More than a half of sellers contribute **less than 5% of total revenue**.
-  - **The top 10** sellers have different top 5 best-selling categories overall.
-  - **The top 10** sellers generally rely heavily on one main category that generates the majority of their revenue
+### Gender
+- Men represent 88% of victims (247 vs. 33 women); fewer than 20% of victims are female (prop-test p=0.0003875).
+- No significant associations were found between gender and accident type or between gender and victim characteristics (chi-square tests not rejected).
+- Highlights higher male exposure and risk-taking behavior rather than structural factors.
 
+### Accident Type & Class
+- Types include collisions (fixed/moving objects, general) and rollovers, all fatal in the dataset.
+- Strong association exists between accident type and victim characteristics (p=2.652e-11).
+- Moving-object collisions peak on Saturdays (high traffic volume).
+- Fixed-object collisions peak on Sundays (likely linked to impairment).
+- Rollover incidents are most frequent on weekends.
 
-### Customer Behavior and Segmentation
+### Victim Characteristics
 
-- The "Best Customers" segment represents only 2% of the company's total revenue.
-- "Potential Loyal Customers" contribute approximately one-fourth of total revenue, highlighting the importance of implementing loyalty-building initiatives.
-- The "At Risk" segment accounts for nearly one-third of all customers, indicating that many previously frequent buyers are no longer generating sales.
-- These findings underscore the importance of maintaining customer relationships over time to secure consistent and recurring revenue.
-- Based on the RFM analysis, customers who contribute most  to the sales did not make additional purchases
+- Dataset focuses on drivers; motorcyclists are the most vulnerable group.
+- Cyclists are mostly struck victims rather than causing accidents.
+- Victim type is independent of the day of the week (chi-square not rejected).
+- No significant association between gender and victim type.
+- Young males dominate the accident profile.
 
-Nr. Orders per Customer Viz
-- This chart shows the dominance of single-purchase customers, which suggests low repeat purchase rates
+### Temporal Patterns 
 
+- Significant variation in accident frequency by day of the week (chi-square p=2.167e-07).
+- Saturdays show the highest number of moving-object collisions due to traffic density.
+- Sundays show the highest number of fixed-object collisions, possibly related to alcohol or substance use.
+- Rollovers increase significantly on weekends.
+- Interventions should be tailored by day of the week to address peak-risk periods.
 
-![Nr. Orders per Customer](https://github.com/user-attachments/assets/8a2627b8-65f8-49cd-aa54-08d71a6871b2)
+### Recommendations
 
-### Geographic Sales Distribution
-
-- Beleza_saude appears in the top 5 categories in every state, indicating consistently strong performance
-  and broad customer demand across the country.
-- Cama_mesa_banho appears in the top 5 in only 8 out of 27 states, which suggests a more region-specific demand.
-Addtionally, it is purchased mainly in the highest-revenue states, showing stronger demand in larger and more developed markets.
-- Sao Paulo (SP) is the state with the highest overall revenue. It also shows high category diversification,
-meaning its sales are distributed across many different product categories rather than concentrated in a few.
-- Consumer preferences are relatively consistent across states, but purchasing power and market size vary significantly.
-- States with the highest revenue also tend to have the largest number of sellers. In contrast, low-revenue states usually have very few sellers or in some cases, none, indicating that seller scarcity directly limits sales potential.
-
-Sales Performance by State (to consult state details and accurate specific information please enter into the dashboard)
-
-
-![State Performance](https://github.com/user-attachments/assets/fcf24d00-c86a-41f8-8dd3-95a2bdaf5edc)
-
-### Review score and Service Quality
-
-- Several sellers show low average ratings (<3.0), suggesting operational deficiencies such as late shipments, poor handling, or inconsistent service. 
-These sellers should be monitored closely and may require training or performance improvement plans.
-
-- Delivery delays significantly reduce customer satisfaction, as evidenced by the lower average review scores for delayed orders.
-This reinforces the importance of logistics efficiency and accurate delivery-time estimates.
-
-- Categories with both high sales volume and high review scores represent strong performance areas. 
-In contrast, categories with low review scores signal opportunities for targeted service or product improvements.
-
-- Moveis_escritorio is a high-priority category for intervention because it combines low review scores with high order volume, 
-meaning a large number of customers are being negatively affected.
-
-- Cama_mesa_banho is another key category: despite being among the highest in revenue and total orders, it also shows one of the lowest average review scores. 
-This mismatch indicates a risk of long-term customer dissatisfaction in a high-impact category.
-
-- Seller 7c67e1448b00f6e969d365cea6b010ab stands out as a critical case: despite selling over 1,300 products, 
-the seller maintains the lowest average review scores, suggesting severe operational or quality-related issues.
-
-- Improving logistics reliability and monitoring low-performing sellers could significantly raise customer satisfaction across the platform.
-
-### Order payments type
-
-- High-installment sellers vary significantly across product categories. 
-
-- Categories like 'eletrodomesticos_2', 'moveis_decoracao', and 'automotivo' have the highest average installments, suggesting reliance on financing for higher-priced or durable goods.
-
-- Customer financing preferences align with product type, particularly for expensive or long-term purchase items. 
-
-
-## Recommendations
-
-Based on the analysis, the following actions are recommended to the stakeholder team:
-
-- **Expand market reach:** Leverage Olist’s steady growth with nationwide marketing campaigns to sustain momentum and attract new customers.
-- **Activate inactive sellers:** Launch seller‑focused initiatives (training, incentives, promotional tools) to increase participation and revenue contribution.
-- **Prioritize high‑performing categories:** Invest in marketing and inventory for top categories and products that consistently drive sales.
-- **Optimize freight policies:** Balance shipping costs across states to reduce barriers in underperforming regions and boost demand.
-- **Strengthen logistics and quality control:** Improve delivery reliability, monitor low‑rated sellers, and address product/service complaints to enhance customer satisfaction.
-- **Leverage financing preferences:** Tailor marketing and payment options to categories where installment plans are most common, supporting higher‑value purchases.
-- **Build customer loyalty programs:** Implement engagement strategies to encourage repeat purchases and reduce reliance on one‑time buyers.
+- Target high-risk motorcyclists under 35: Helmets, training, and weekend awareness campaigns.
+- Enhance weekend enforcement: Focus on Saturdays (traffic collisions), Sundays (impaired driving), and rollover monitoring.
+- Protect cyclists: Infrastructure improvements, dedicated lanes, and driver awareness campaigns.
+- Accident type-focused measures: Moving-object collisions (motorcyclists), fixed-object collisions (impaired drivers), rollovers (weekends).
+- Age- and gender-specific interventions: Prioritize young males; adapt messaging where gender-neutral strategies apply.
+- Temporal interventions: Adjust traffic control, checkpoints, and public campaigns based on day-specific risk patterns.
+- Hotspot monitoring: Identify high-risk areas and use data-driven interventions to reduce accidents.
+- Continuous evaluation: Regularly track accident patterns to refine interventions and identify emerging risk groups.
