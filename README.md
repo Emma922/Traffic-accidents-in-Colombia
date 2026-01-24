@@ -69,13 +69,6 @@ Key insights include:
 - Monitor accident trends over time to evaluate the impact of preventive measures and identify emerging risk patterns.
 ---
 
-## Insights Deep Dive
-
-
-### Vehicle Type
--Motorcyclists account for over 70% of the 280 fatalities (232 cases), far exceeding cyclists (36) and automobile drivers (12).
-- They show the highest risk across genders and are linked strongly to various accident types (chi-square p=2.652e-11 with victim characteristics).
-- Cyclists mainly suffer collisions where not at fault (e.g., struck by vehicles).
 ​
 
 ## Insights Deep Dive
@@ -87,6 +80,9 @@ Key insights include:
 - Cyclists are primarily struck victims; rarely cause collisions themselves.
 - Rollovers are more frequent among motorcycles on weekends.
 
+<img width="973" height="469" alt="image" src="https://github.com/user-attachments/assets/b8f7e8fc-b27d-4cda-8c00-b0d4579568fd" />
+
+  
 ### Age
 
 - Fatalities concentrate among young adults; age distribution is positively skewed and non-normal (Shapiro-Wilk p=3.164e-11).
