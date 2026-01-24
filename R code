@@ -1,0 +1,630 @@
+# Package installation
+install.packages(c("tidyverse","skimr","readxl", "MASS","dplyr","tidyr","ggplot2","knitr","scales","car"))
+
+# Library import
+library(tidyverse)
+library(skimr)
+library(readxl)
+library(MASS)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(scales)
+
+# Read data
+accidentes <- read_excel("C:/Users/Yei_Salazar/Desktop/accidentes.xlsx")
+
+skim(accidentes)
+accidentes_1_=accidentes
+print(accidentes_1_)
+summary(accidentes_1_)
+ls()
+
+# Frequency of accidents by age
+ggplot(accidentes, aes(x = Edad)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "black") +
+  labs(title = "Age Distribution", x = "Age", y = "Frequency")
+
+# Test normality with Shapiro-Wilk test
+shapiro.test(accidentes$Edad)
+# If p-value < 0.05, normality is rejected.
+# Normality is rejected
+
+# Determine the mean with 95% confidence
+t.test(accidentes$Edad, conf.level = 0.95)
+
+# MAIN TABLE WITH TOTALS AND PROPORTIONS FOR BOTH GENDERS
+tabla_principal <- accidentes %>%
+  filter(!is.na(Genero), !is.na(`Clase de Accidente`)) %>%
+  group_by(`Clase de Accidente`) %>%
+  summarise(
+    Masculino = sum(Genero == "Masculino"),
+    Femenino = sum(Genero == "Femenino"),
+    Total = n(),
+    .groups = 'drop'
+  )
+
+# Add totals row
+totales <- tabla_principal %>%
+  summarise(across(c(Masculino, Femenino, Total), sum)) %>%
+  mutate(`Clase de Accidente` = "TOTAL")
+
+# Bind table with totals
+tabla_principal <- bind_rows(tabla_principal, totales) %>%
+  mutate(
+    Prop_Masculino = Masculino / Total,
+    Prop_Femenino = Femenino / Total,
+    IC_Masculino_Inferior = mapply(function(x, n) prop.test(x, n)$conf.int[1], Masculino, Total),
+    IC_Masculino_Superior = mapply(function(x, n) prop.test(x, n)$conf.int[2], Masculino, Total),
+    IC_Femenino_Inferior = mapply(function(x, n) prop.test(x, n)$conf.int[1], Femenino, Total),
+    IC_Femenino_Superior = mapply(function(x, n) prop.test(x, n)$conf.int[2], Femenino, Total)
+  )
+
+# TABLE FOR MALES ONLY
+tabla_masculino <- accidentes %>%
+  filter(Genero == "Masculino", !is.na(`Clase de Accidente`)) %>%
+  group_by(`Clase de Accidente`) %>%
+  summarise(Conteo = n(), .groups = 'drop') %>%
+  bind_rows(
+    summarise(., `Clase de Accidente` = "TOTAL", Conteo = sum(Conteo))
+  )
+
+# Calculate global total (excluding TOTAL row for proportions and CI)
+total_masculino <- sum(tabla_masculino$Conteo[tabla_masculino$`Clase de Accidente` != "TOTAL"])
+
+tabla_masculino <- tabla_masculino %>%
+  mutate(
+    Proporcion = Conteo / total_masculino,
+    IC_Inferior = mapply(function(x) prop.test(x, total_masculino)$conf.int[1], Conteo),
+    IC_Superior = mapply(function(x) prop.test(x, total_masculino)$conf.int[2], Conteo)
+  )
+
+# TABLE FOR FEMALES ONLY
+tabla_femenino <- accidentes %>%
+  filter(Genero == "Femenino", !is.na(`Clase de Accidente`)) %>%
+  group_by(`Clase de Accidente`) %>%
+  summarise(Conteo = n(), .groups = 'drop') %>%
+  bind_rows(
+    summarise(., `Clase de Accidente` = "TOTAL", Conteo = sum(Conteo))
+  )
+
+total_femenino <- sum(tabla_femenino$Conteo[tabla_femenino$`Clase de Accidente` != "TOTAL"])
+
+tabla_femenino <- tabla_femenino %>%
+  mutate(
+    Proporcion = Conteo / total_femenino,
+    IC_Inferior = mapply(function(x) prop.test(x, total_femenino)$conf.int[1], Conteo),
+    IC_Superior = mapply(function(x) prop.test(x, total_femenino)$conf.int[2], Conteo)
+  )
+
+# Display tables
+print(tabla_principal)
+print(tabla_masculino)
+print(tabla_femenino)
+
+tabla_completa <- accidentes %>%
+  filter(!is.na(`Clase de Accidente`), !is.na(Genero)) %>%
+  group_by(`Clase de Accidente`) %>%
+  summarise(
+    Total = n(),
+    Porcentaje = Total/nrow(accidentes)*100,
+    
+    # General age statistics
+    Edad_Promedio = mean(Edad, na.rm = TRUE),
+    Edad_Mediana = median(Edad, na.rm = TRUE),
+    Edad_Min = min(Edad, na.rm = TRUE),
+    Edad_Max = max(Edad, na.rm = TRUE),
+    Desviacion_Edad = sd(Edad, na.rm = TRUE),
+    
+    # Statistics by gender (including CI)
+    Masculino = sum(Genero == "Masculino"),
+    Femenino = sum(Genero == "Femenino"),
+    Porc_Masculino = Masculino/Total*100,
+    Porc_Femenino = Femenino/Total*100,
+    
+    # Confidence intervals for proportions
+    IC_Masculino_Inf = prop.test(Masculino, Total)$conf.int[1]*100,
+    IC_Masculino_Sup = prop.test(Masculino, Total)$conf.int[2]*100,
+    IC_Femenino_Inf = prop.test(Femenino, Total)$conf.int[1]*100,
+    IC_Femenino_Sup = prop.test(Femenino, Total)$conf.int[2]*100,
+    
+    # Age by gender
+    Edad_Media_M = mean(Edad[Genero == "Masculino"], na.rm = TRUE),
+    Edad_Media_F = mean(Edad[Genero == "Femenino"], na.rm = TRUE),
+    
+    .groups = 'drop'
+  ) %>%
+  mutate(across(where(is.numeric), ~round(., 2))) %>%
+  arrange(desc(Total))
+
+# Add totals row
+totales <- tabla_completa %>%
+  summarise(
+    across(c(Total, Masculino, Femenino), sum),
+    across(c(Edad_Promedio, Edad_Mediana, Edad_Media_M, Edad_Media_F), 
+           ~mean(., na.rm = TRUE)),
+    across(c(Edad_Min, Edad_Max), ~min(., na.rm = TRUE)),
+    Porcentaje = 100,
+    Porc_Masculino = sum(Masculino)/sum(Total)*100,
+    Porc_Femenino = sum(Femenino)/sum(Total)*100,
+    IC_Masculino_Inf = prop.test(sum(Masculino), sum(Total))$conf.int[1]*100,
+    IC_Masculino_Sup = prop.test(sum(Masculino), sum(Total))$conf.int[2]*100,
+    IC_Femenino_Inf = prop.test(sum(Femenino), sum(Total))$conf.int[1]*100,
+    IC_Femenino_Sup = prop.test(sum(Femenino), sum(Total))$conf.int[2]*100
+  ) %>%
+  mutate(`Clase de Accidente` = "TOTAL")
+
+tabla_completa <- bind_rows(tabla_completa, totales)
+
+# STATISTICS BY VEHICLE AND DAY (WITH CI)
+estadisticas_vehiculo <- accidentes %>%
+  filter(!is.na(`Vehiculo de la Victima`)) %>%
+  group_by(`Vehiculo de la Victima`) %>%
+  summarise(
+    Total = n(),
+    Porcentaje = Total/nrow(accidentes)*100,
+    IC_Inf = prop.test(Total, nrow(accidentes))$conf.int[1]*100,
+    IC_Sup = prop.test(Total, nrow(accidentes))$conf.int[2]*100,
+    
+    Edad_Promedio = mean(Edad, na.rm = TRUE),
+    Edad_Mediana = median(Edad, na.rm = TRUE),
+    
+    Masculino = sum(Genero == "Masculino", na.rm = TRUE),
+    Femenino = sum(Genero == "Femenino", na.rm = TRUE),
+    Porc_Masculino = Masculino/Total*100,
+    Porc_Femenino = Femenino/Total*100,
+    IC_Masculino_Inf = prop.test(Masculino, Total)$conf.int[1]*100,
+    IC_Masculino_Sup = prop.test(Masculino, Total)$conf.int[2]*100,
+    
+    .groups = 'drop'
+  ) %>%
+  mutate(across(where(is.numeric), ~round(., 2))) %>%
+  arrange(desc(Total))
+
+estadisticas_dias <- accidentes %>%
+  filter(!is.na(`Dia de la semana`)) %>%
+  group_by(`Dia de la semana`) %>%
+  summarise(
+    Total = n(),
+    Porcentaje = Total/nrow(accidentes)*100,
+    IC_Inf = prop.test(Total, nrow(accidentes))$conf.int[1]*100,
+    IC_Sup = prop.test(Total, nrow(accidentes))$conf.int[2]*100,
+    
+    Edad_Promedio = mean(Edad, na.rm = TRUE),
+    Edad_Mediana = median(Edad, na.rm = TRUE),
+    
+    Masculino = sum(Genero == "Masculino", na.rm = TRUE),
+    Femenino = sum(Genero == "Femenino", na.rm = TRUE),
+    Porc_Masculino = Masculino/Total*100,
+    Porc_Femenino = Femenino/Total*100,
+    IC_Masculino_Inf = prop.test(Masculino, Total)$conf.int[1]*100,
+    IC_Masculino_Sup = prop.test(Masculino, Total)$conf.int[2]*100,
+    
+    .groups = 'drop'
+  ) %>%
+  mutate(across(where(is.numeric), ~round(., 2))) %>%
+  arrange(desc(Total))
+
+# Distribution of ages by accident type and gender
+ggplot(accidentes %>% filter(!is.na(Genero)), 
+       aes(x = `Clase de Accidente`, y = Edad, fill = Genero)) +
+  geom_boxplot() +
+  labs(
+    title = "Age Distribution by Accident Type and Gender",
+    x = "Accident Class",
+    y = "Age",
+    fill = "Gender"
+  ) +
+  scale_fill_manual(values = c("Masculino" = "#3498db", "Femenino" = "#e74c3c")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "top"
+  )
+
+# Accidents by day of the week
+ggplot(estadisticas_dias, aes(x = `Dia de la semana`, y = Total, fill = `Dia de la semana`)) +
+  geom_col() +
+  geom_text(aes(label = Total), vjust = -0.5) +
+  labs(
+    title = "Accidents by Day of the Week",
+    x = "Day",
+    y = "Number of Accidents"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"
+  )
+
+# PROPORTION TESTS (prop.test)
+
+# Are less than 20% of accident victims women?
+# Hypothesis:
+# H0: Proportion of women >= 20%
+# H1: Proportion of women < 20%
+
+mujeres <- sum(accidentes$Genero == "Femenino")
+total <- nrow(accidentes)
+prop.test(mujeres, total, p = 0.20, alternative = "less", conf.level = 0.95)
+
+# If p-value < 0.05, reject H0
+# Therefore, there are less than 20% of women accident victims
+
+# Chart
+barplot(c(Women = 0.1179, Men = 1 - 0.1179), 
+        col = c("pink", "lightblue"),
+        main = "Gender Proportion in Accidents")
+
+# Are more than 70% of accidents involving motorcyclists?
+# Hypothesis:
+# H0: Proportion of motorcyclists <= 70%
+# H1: Proportion of motorcyclists > 70%
+
+motociclistas <- sum(accidentes$`Vehiculo de la Victima` == "Motocicleta")
+prop.test(motociclistas, total, p = 0.70, alternative = "greater")
+
+# If p-value < 0.05, reject H0
+# Therefore, there are more than 70% of motorcyclists in accidents
+
+# Chart
+valores <- c(Motorcyclists = 0.8286, Reference = 0.7)
+barplot(valores, col = c("#e63946", "white"), ylim = c(0, 0.9),
+        main = "82.9% of accidents involve motorcycles")
+abline(h = 0.7, lty = 2, col = "red")
+text(1, 0.87, "p < 0.05", font = 2)
+
+# ANOVA
+
+# Does average age have significant differences across all days?
+# H0: Average age does not have significant differences across all days
+# H1: Average age has significant differences across all days
+
+# Test homogeneity of variances (Levene)
+library(car)
+leveneTest(Edad ~ `Dia de la semana`, data = accidentes_1_, center = mean)
+
+# If variances are homogeneous: ANOVA
+modelo_anova <- aov(Edad ~ `Dia de la semana`, data = accidentes_1_)
+summary(modelo_anova)
+
+# If variances are NOT homogeneous: Welch ANOVA
+oneway.test(Edad ~ `Dia de la semana`, data = accidentes_1_, var.equal = FALSE)
+
+# p-value > 0.05: Not enough evidence to reject H0, so average age does not have significant differences across all days
+
+# Chart
+edad_promedio_dia <- accidentes_1_ %>%
+  group_by(`Dia de la semana`) %>%
+  summarise(Edad_Promedio = mean(Edad, na.rm = TRUE))
+
+ggplot(edad_promedio_dia, aes(x = `Dia de la semana`, y = Edad_Promedio)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Average age by day of the week",
+       x = "Day of the week",
+       y = "Average age") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# CHI-SQUARE TEST (chisq.test, fisher.test)
+
+# Does the vehicle involved depend on the day of the week?
+# Hypothesis:
+# H0: Vehicle type does not depend on day of the week (are independent)
+# H1: Vehicle type depends on day of the week (are not independent)
+
+tabla_vehiculo_dia <- table(accidentes$`Vehiculo de la Victima`, accidentes$`Dia de la semana`)
+fisher.test(tabla_vehiculo_dia, simulate.p.value = TRUE, B = 10000)
+
+# p-value > 0.05: Not enough evidence to reject H0, so vehicle type does not depend on day of the week (are independent)
+
+df <- as.data.frame(tabla_vehiculo_dia)
+colnames(df) <- c("Vehicle", "Day", "Frequency")
+
+# Chart
+ggplot(df, aes(x = Day, y = Frequency, fill = Vehicle)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(x = "Day of the week", y = "Number of accidents",
+       fill = "Victim's vehicle",
+       title = "Accidents by Vehicle and Day of the Week") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Is there an association between day of the week and gender?
+# Hypothesis:
+# H0: No association between day of the week and gender
+# H1: There is an association between day of the week and gender
+
+tabla_contingencia <- table(accidentes_1_$`Dia de la semana`, accidentes_1_$Genero)
+resultado_chi <- chisq.test(tabla_contingencia)
+print(resultado_chi)
+
+# p-value > 0.05: Not enough evidence to reject H0, so there is no association between day of the week and gender
+
+# Chart
+df_tabla <- as.data.frame(tabla_contingencia)
+colnames(df_tabla) <- c("DayOfWeek", "Gender", "Frequency")
+
+ggplot(df_tabla, aes(x = DayOfWeek, y = Frequency, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Accidents by Day of the Week and Gender",
+       x = "Day of the Week",
+       y = "Number of Accidents") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Is there a relationship between day and accident type?
+# H0: No relationship between day and accident type
+# H1: Significant relationship exists
+
+tabla_accidente <- table(accidentes_1_$`Dia de la semana`, accidentes_1_$`Clase de Accidente`)
+chisq.test(tabla_accidente)
+print(tabla_accidente)
+
+# p-value < 0.05: Reject H0, so there is a significant relationship
+
+# Chart
+df_accidente <- as.data.frame(tabla_accidente)
+colnames(df_accidente) <- c("Day", "Type", "Frequency")
+
+ggplot(df_accidente, aes(x = Day, y = Frequency, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Types of accidents by day of the week",
+       x = "Day of the week",
+       y = "Frequency",
+       fill = "Accident Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Are victim characteristics dependent on the day?
+# H0: Victim characteristics are independent of the day
+# H1: There is dependence between both variables
+
+tabla_victima <- table(accidentes_1_$`Dia de la semana`, accidentes_1_$`Características de la victima`)
+chisq.test(tabla_victima)
+print(tabla_victima)
+
+# p-value > 0.05: Do not reject H0, so victim characteristics are independent of the day
+
+# Chart
+df_victima <- as.data.frame(tabla_victima)
+colnames(df_victima) <- c("Day", "Characteristic", "Frequency")
+
+# By proportions
+ggplot(df_victima, aes(x = Day, y = Frequency, fill = Characteristic)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Proportional distribution of victim characteristics by day",
+       x = "Day of the week",
+       y = "Proportion",
+       fill = "Victim Characteristics") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Absolute frequencies
+ggplot(df_victima, aes(x = Day, y = Frequency, fill = Characteristic)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Frequency of victim characteristics by day",
+       x = "Day of the week",
+       y = "Frequency",
+       fill = "Victim Characteristics") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Are gender and accident class dependent?
+# H0: Gender and accident class are independent
+# H1: There is a relationship between gender and accident class
+
+tabla_genero_accidente <- table(accidentes_1_$Genero, accidentes_1_$`Clase de Accidente`)
+
+# Chi-square test
+resultado_chi <- chisq.test(tabla_genero_accidente)
+print(resultado_chi)
+
+# If cells with expected frequency < 5 in more than 20% of table, use Fisher
+if(any(resultado_chi$expected < 5)) {
+  print(fisher.test(tabla_genero_accidente))
+}
+
+# p-value > 0.05: Do not reject H0, so gender and accident class are independent
+
+# Charts
+df_genero_accidente <- as.data.frame(tabla_genero_accidente)
+colnames(df_genero_accidente) <- c("Gender", "AccidentClass", "Frequency")
+
+ggplot(df_genero_accidente, aes(x = Gender, y = Frequency, fill = AccidentClass)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Proportion of accident classes by gender",
+       x = "Gender",
+       y = "Proportion",
+       fill = "Accident Class") +
+  theme_minimal()
+
+# Is there a relationship between gender and victim characteristics?
+# H0: Gender and victim characteristics are independent
+# H1: There is a relationship between gender and victim characteristics
+
+tabla_genero_victima <- table(accidentes_1_$Genero, accidentes_1_$`Características de la victima`)
+
+resultado_chi_victima <- chisq.test(tabla_genero_victima)
+print(resultado_chi_victima)
+
+# p-value > 0.05: Do not reject H0, so gender and victim characteristics are independent
+
+# Chart
+df_genero_victima <- as.data.frame(tabla_genero_victima)
+colnames(df_genero_victima) <- c("Gender", "Characteristic", "Frequency")
+
+ggplot(df_genero_victima, aes(x = Gender, y = Frequency, fill = Characteristic)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Proportion of victim characteristics by gender",
+       x = "Gender",
+       y = "Proportion",
+       fill = "Victim Characteristics") +
+  theme_minimal()
+
+# Is there a relationship between accident class and victim characteristics?
+# H0: No relationship between accident class and victim characteristics
+# H1: There is a relationship between accident class and victim characteristics
+
+tabla <- table(accidentes_1_$`Clase de Accidente`, accidentes_1_$`Características de la victima`)
+resultado_chi <- chisq.test(tabla)
+print(resultado_chi)
+
+# p-value < 0.05: Reject H0, so there is a relationship between accident class and victim characteristics
+
+# Chart
+df <- as.data.frame(tabla)
+colnames(df) <- c("AccidentClass", "Characteristic", "Frequency")
+
+ggplot(df, aes(x = AccidentClass, y = Frequency, fill = Characteristic)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Proportion of victim characteristics by accident class",
+       x = "Accident Class",
+       y = "Proportion",
+       fill = "Victim Characteristics") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Does the frequency of accidents vary by day of the week?
+# H0: Accident frequency is equal every day
+# H1: Some days have more accidents than others
+
+tabla <- table(accidentes_1_$`Dia de la semana`)
+chisq.test(tabla)
+print(tabla)
+
+# p-value < 0.05: Reject H0, so some days have more accidents than others
+
+# Chart
+df_dias <- as.data.frame(tabla)
+colnames(df_dias) <- c("Day", "Frequency")
+
+ggplot(df_dias, aes(x = Day, y = Frequency)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Frequency of accidents by day of the week",
+       x = "Day of the week",
+       y = "Number of accidents") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Does the distribution of "Collision with fixed object" vary by gender?
+# Hypothesis:
+# H0: The proportion of "Collision with fixed object" does not depend on gender
+# H1: The proportion of "Collision with fixed object" varies by gender
+
+chisq.test(table(accidentes$Genero, accidentes$`Clase de Accidente` == "Colision con objeto fijo"))
+
+# p-value > 0.05: Therefore, the proportion of "Collision with fixed object" does not depend on gender
+
+# Chart
+# Calculate total accidents by gender
+total_por_genero <- accidentes %>%
+  group_by(Genero) %>%
+  summarise(total = n())
+
+# Calculate number of collisions by gender
+colisiones_por_genero <- accidentes %>%
+  filter(`Clase de Accidente` == "Colision con objeto fijo") %>%
+  group_by(Genero) %>%
+  summarise(colisiones = n())
+
+# Join and calculate proportion
+df_prop <- colisiones_por_genero %>%
+  left_join(total_por_genero, by = "Genero") %>%
+  mutate(prop = colisiones / total)
+
+# Chart proportion of collisions by gender
+ggplot(df_prop, aes(x = Genero, y = prop, fill = Genero)) +
+  geom_col() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(title = "Proportion of 'Collision with fixed object' by gender",
+       y = "Proportion", x = "Gender") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# T-TEST FOR MEANS (t.test)
+
+# Does the average age of accident victims differ by gender?
+# Hypothesis:
+# H0: Average age (men) = Average age (women)
+# H1: Average age (men) ≠ Average age (women)
+
+t.test(Edad ~ Genero, data = accidentes, var.equal = FALSE)
+
+# p-value < 0.05, indicates significant differences in average age by gender
+
+# Chart
+# Statistics for the chart
+estadisticos <- accidentes %>%
+  group_by(Genero) %>%
+  summarise(
+    Media = mean(Edad, na.rm = TRUE),
+    IC_Inferior = t.test(Edad)$conf.int[1],
+    IC_Superior = t.test(Edad)$conf.int[2]
+  )
+
+# Bar chart with CI
+ggplot(estadisticos, aes(x = Genero, y = Media, fill = Genero)) +
+  geom_col(width = 0.6, alpha = 0.7) +
+  geom_errorbar(
+    aes(ymin = IC_Inferior, ymax = IC_Superior),
+    width = 0.15, color = "black", linewidth = 0.8
+  ) +
+  geom_text(
+    aes(label = paste0("Mean = ", round(Media, 1), " years")),
+    vjust = -1.5, size = 4, fontface = "bold"
+  ) +
+  scale_fill_manual(values = c("Masculino" = "green", "Femenino" = "#ff7f0e")) +
+  labs(
+    title = "Average age in accidents by gender",
+    subtitle = "Error bars represent 95% CI",
+    x = "",
+    y = "Average age (years)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Do motorcyclists have an average age less than 35 years?
+# Hypothesis:
+# H0: Average age >= 35 years
+# H1: Average age < 35 years
+
+motociclistas_edad <- accidentes %>% 
+  filter(`Vehiculo de la Victima` == "Motocicleta") %>% 
+  pull(Edad)
+
+t.test(motociclistas_edad, mu = 35, alternative = "less")
+
+# p-value < 0.05, indicates that the average age of motorcyclists is less than 35 years
+
+# Data for the chart
+media_moto <- mean(motociclistas_edad)
+ic <- t.test(motociclistas_edad)$conf.int
+
+df <- data.frame(
+  Grupo = "Motorcyclists",
+  Media = media_moto,
+  LI = ic[1],
+  LS = ic[2],
+  Referencia = 35
+)
+
+# Chart
+ggplot(df, aes(x = Grupo)) +
+  geom_point(aes(y = Media), size = 5, color = "#e63946") +
+  geom_errorbar(aes(ymin = LI, ymax = LS), 
+                width = 0.1, color = "#333333", linewidth = 1) +
+  geom_hline(aes(yintercept = Referencia), 
+             linetype = "dashed", color = "red", linewidth = 1) +
+  geom_text(aes(y = Media, label = paste0("Mean = ", round(Media, 1), " years")),
+            vjust = -2, size = 5) +
+  annotate("text", x = 1, y = 36, 
+           label = "Reference value: 35 years", color = "red") +
+  labs(title = "Average age of motorcyclists in accidents",
+       subtitle = paste("One-tailed t-test: p =", 
+                        format.pval(t.test(motociclistas_edad, mu = 35, alternative = "less")$p.value, digits = 3)),
+       y = "Age (years)",
+       x = "") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold",
