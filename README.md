@@ -6,7 +6,7 @@ This academic project analyzes traffic accident data in Neiva Colombia between J
 
 ## Dataset Overview
 
-Data Source: Traffic accidents dataset [ https://www.datos.gov.co/dataset/MUERTES-ACCIDENTES-DE-TRANSITO-2012-2022-MARZO/wwir-6riq/data_preview ]
+Data Source: [Traffic accidents dataset] (https://www.datos.gov.co/dataset/MUERTES-ACCIDENTES-DE-TRANSITO-2012-2022-MARZO/wwir-6riq/data_preview)
 Key Variables Analyzed:
 
 Age of accident victims
