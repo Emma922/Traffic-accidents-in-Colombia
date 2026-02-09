@@ -143,3 +143,5 @@ Key insights include:
 - Temporal interventions: Adjust traffic control, checkpoints, and public campaigns based on day-specific risk patterns.
 - Hotspot monitoring: Identify high-risk areas and use data-driven interventions to reduce accidents.
 - Continuous evaluation: Regularly track accident patterns to refine interventions and identify emerging risk groups.
+
+Word document where I tracked all project steps :
