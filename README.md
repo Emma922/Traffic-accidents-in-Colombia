@@ -144,4 +144,4 @@ Key insights include:
 - Hotspot monitoring: Identify high-risk areas and use data-driven interventions to reduce accidents.
 - Continuous evaluation: Regularly track accident patterns to refine interventions and identify emerging risk groups.
 
-Word document where I tracked all project steps :
+[Word document where I tracked all project steps :](https://github.com/Emma922/Traffic-accidents-in-Colombia/blob/main/Traffic%20Accidents%20Document.docx)
